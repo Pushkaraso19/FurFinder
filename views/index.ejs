@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FurFinder</title>
+</head>
+<body>
+  <h1>FurFinder - Discover Every Breed, One Paw at a Time!</h1>
+  <h3>List of Breeds</h3>
+  <ol>
+    <% if (locals.breeds) { %>
+      <% for (const breed in breeds) {%>
+        <li class="breed-name">
+            <a href="/breed-details?breed=<%= breed %>"><%= breed %></a>
+          <% if (breeds[breed].length > 0) { %>
+            <ul class="sub-breeds">
+              <% breeds[breed].forEach(subBreed => { %>
+                <li class="breed-name">
+                  <a href="/breed-details?breed=<%= breed %>&subBreed=<%= subBreed %>"><%= subBreed %></a>
+                </li>
+              <% }); %>
+            </ul>
+          <% } %>
+        </li>
+      <% } %>
+    <% } %>
+  </ol>
+  <div class="image-container">
+    <div class="breed-name">
+      <h2><%= title %></h2>
+    </div>
+    <% if (locals.imageUrl) { %>
+      <img src="<%= imageUrl %>" alt="Breed Image"></img>
+      <% if (locals.currentBreed) { %>
+        <form action="/breed-details" method="get">
+          <input type="hidden" name="breed" value="<%= currentBreed %>">
+          <% if (locals.currentSubBreed) { %>
+            <input type="hidden" name="subBreed" value="<%= currentSubBreed %>">
+          <% } %>
+          <button type="submit" class="btn">Get Another Image</button>
+        </form>
+       <% } %>
+    <% } else { %>
+      <img src="images\FurFinder.jpg" alt="FurFinder Logo">   
+    <% } %>
+    </div>
+    <footer>Powered by <a href="https://dog.ceo/dog-api/">Dog CEO's Dog API</a></footer>
+</body>
+</html>
