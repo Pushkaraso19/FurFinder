@@ -21,25 +21,31 @@ app.get("/", async (req, res) => {
 
 app.get("/breed-details", async (req, res) => {
   const { breed, subBreed } = req.query;
-  const response = await axios.get("https://dog.ceo/api/breeds/list/all");
-  let url, breedName;
-  if (breed && subBreed) {
-    const response = await axios.get(`https://dog.ceo/api/breed/${breed}/${subBreed}/images/random`);
-    url = response.data.message;
-    breedName = `${subBreed} ${breed}`;
-  } else if (breed) {
-    const response = await axios.get(`https://dog.ceo/api/breed/${breed}/images/random`);
-    url = response.data.message;
-    breedName = breed;
+  try {
+      const response = await axios.get("https://dog.ceo/api/breeds/list/all");
+    let url, breedName;
+    if (breed && subBreed) {
+      const response = await axios.get(`https://dog.ceo/api/breed/${breed}/${subBreed}/images/random`);
+      url = response.data.message;
+      breedName = `${subBreed} ${breed}`;
+    } else if (breed) {
+      const response = await axios.get(`https://dog.ceo/api/breed/${breed}/images/random`);
+      url = response.data.message;
+      breedName = breed;
+    }
+    
+    res.render("index.ejs", {
+      breeds: response.data.message,
+      imageUrl: url,
+      title: breedName,
+      currentBreed: breed,
+      currentSubBreed: subBreed
+  });
+  } catch (error) {
+    console.error("Error fetching breed details:", error);
+    res.status(500).send("Error fetching breed details");
+    
   }
-  console.log(`${url}`);
-  res.render("index.ejs", {
-    breeds: response.data.message,
-    imageUrl: url,
-    title: breedName,
-    currentBreed: breed,
-    currentSubBreed: subBreed
-  })
 });
 
 app.listen(PORT, () => {
